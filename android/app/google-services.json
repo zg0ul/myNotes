@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "452820158591",
+    "project_id": "zg0ul-notes-app",
+    "storage_bucket": "zg0ul-notes-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:452820158591:android:28d7fd5c212008c98ed74a",
+        "android_client_info": {
+          "package_name": "tech.zg0ul.mynotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "452820158591-rs9cpu275jq2bsdpqqtt4p183dt644jr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPI_Im_ewyQgAxTD7AUkPJbOoFRJzg5j4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "452820158591-rs9cpu275jq2bsdpqqtt4p183dt644jr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
