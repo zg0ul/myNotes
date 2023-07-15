@@ -6,24 +6,26 @@ import 'package:mynotes/views/register_view.dart';
 import 'package:mynotes/views/verify_email_view.dart';
 // import 'package:mynotes/views/register_view.dart';
 // import '../views/login_view.dart';
+import 'constants/routes.dart';
 import 'firebase_options.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         // useMaterial3: true,
         primarySwatch: Colors.teal,
       ),
       home: const HomePage(),
       // add routes to different pages.
       routes: {
-        '/login/': (context) => const LoginView(),
-        '/register/': (context) => const RegisterView(),
-        '/notes/': (context) => const NotesView(),
+        loginRoute: (context) => const LoginView(),
+        registerRoute: (context) => const RegisterView(),
+        notesRoute: (context) => const NotesView(),
       },
     ),
   );
@@ -83,8 +85,10 @@ class _NotesViewState extends State<NotesView> {
                   if (shouldLogout) {
                     await FirebaseAuth.instance.signOut();
                     if (context.mounted) {
-                      Navigator.of(context)
-                          .pushNamedAndRemoveUntil('/login/', (_) => false);
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        loginRoute,
+                        (_) => false,
+                      );
                     }
                   }
                   break;
