@@ -67,11 +67,23 @@ class _LoginViewState extends State<LoginView> {
                   password: password,
                 ); // use await to wait for the future to complete (with async)
                 // otherwise, it will return an instance of "Future".
-                if (context.mounted) {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    notesRoute,
-                    (route) => false,
-                  );
+                final user = FirebaseAuth.instance.currentUser;
+                if (user?.emailVerified ?? false) {
+                  // user's email is verified
+                  if (context.mounted) {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      notesRoute,
+                      (route) => false,
+                    );
+                  }
+                } else {
+                  // user's email is NOT verified
+                  if (context.mounted) {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      verifyEmailRoute,
+                      (route) => false,
+                    );
+                  }
                 }
               } on FirebaseAuthException catch (e) {
                 devtools.log("=========Something Went Wrong!================");
