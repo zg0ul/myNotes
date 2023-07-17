@@ -1,4 +1,9 @@
 {
   "cmake.configureOnOpen": false,
-  "cSpell.ignoreWords": ["mynotes"]
+  "cSpell.ignoreWords": [
+    "Cupertino",
+    "firestore",
+    "foorbar",
+    "mynotes"
+  ]
 }
