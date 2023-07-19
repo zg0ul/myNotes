@@ -1,9 +1,12 @@
 {
   "cmake.configureOnOpen": false,
   "cSpell.ignoreWords": [
+    "AUTOINCREMENT",
     "Cupertino",
+    "crudexceptions",
     "firestore",
     "foorbar",
-    "mynotes"
+    "mynotes",
+    "sqflite"
   ]
 }
