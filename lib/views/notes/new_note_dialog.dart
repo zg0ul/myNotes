@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-void showNewNoteDialog(BuildContext context) {
+showNewNoteDialog(BuildContext context) {
   showDialog(
     context: context,
     builder: (context) {
