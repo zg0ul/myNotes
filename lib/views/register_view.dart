@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mynotes/services/auth/auth_exceptions.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import '../constants/routes.dart';
-import '../utilities/show_error_dialog.dart';
+import '../utilities/dialogs/error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -63,7 +63,7 @@ class _RegisterViewState extends State<RegisterView> {
                 await AuthService.firebase().createUser(
                   email: email,
                   password: password,
-                );// use await to wait for the future to complete (with async)
+                ); // use await to wait for the future to complete (with async)
                 // otherwise, it will return an instance of "Future".
 
                 AuthService.firebase().sendEmailVerification();
@@ -73,25 +73,21 @@ class _RegisterViewState extends State<RegisterView> {
                     verifyEmailRoute,
                   );
                 }
-
               } on WeakPasswordAuthException {
                 await showErrorDialog(
                   context,
                   "The password provided is too weak.",
                 );
-
               } on EmailAlreadyInUseAuthException {
                 await showErrorDialog(
                   context,
                   "Email is already in use.",
                 );
-
               } on InvalidEmailAuthException {
                 await showErrorDialog(
                   context,
                   "Invalid Email.",
                 );
-                
               } on GenericAuthException {
                 await showErrorDialog(
                   context,
