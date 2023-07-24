@@ -30,7 +30,8 @@ class NotesService {
 
   Future<DatabaseUser> getOrCreateUser({required String email}) async {
     try {
-      return await getUser(email: email);
+      final user = await getUser(email: email);
+      return user;
     } on CouldNotFindUser {
       final createdUser = await createUser(email: email);
       return createdUser;
@@ -45,29 +46,27 @@ class NotesService {
     _notesStreamController.add(_notes);
   }
 
-  Future<DatabaseNote> updateNote(
-      {required DatabaseNote note, required String text}) async {
+  Future<DatabaseNote> updateNote({
+    required DatabaseNote note,
+    required String text,
+  }) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
 
-    await getNote(
-        id: note
-            .id); // we only care about the exception so we can ignore the return value
+    // make sure note exists
+    await getNote(id: note.id);
 
-    final updatesCount = await db.update(
-        noteTable,
-        {
-          textColumn: text,
-          isSyncedWithCloudColumn: 0,
-        },
-        where: 'id = ?',
-        whereArgs: [note.id]);
+    // update DB
+    final updatesCount = await db.update(noteTable, {
+      textColumn: text,
+      isSyncedWithCloudColumn: 0,
+    });
 
     if (updatesCount == 0) {
       throw CouldNotUpdateNote();
     } else {
       final updatedNote = await getNote(id: note.id);
-      _notes.removeWhere((notes) => note.id == updatedNote.id);
+      _notes.removeWhere((note) => note.id == updatedNote.id);
       _notes.add(updatedNote);
       _notesStreamController.add(_notes);
       return updatedNote;
@@ -96,7 +95,7 @@ class NotesService {
       throw CouldNotFindNote();
     } else {
       final note = DatabaseNote.fromRow(notes.first);
-      _notes.removeWhere((notes) => notes.id == id);
+      _notes.removeWhere((note) => note.id == id);
       _notes.add(note);
       _notesStreamController.add(_notes);
       return note;
@@ -142,7 +141,7 @@ class NotesService {
     // create the note
     final noteId = await db.insert(noteTable, {
       userIdColumn: owner.id,
-      textColumn: '',
+      textColumn: text,
       isSyncedWithCloudColumn: 1,
     });
 
@@ -196,7 +195,7 @@ class NotesService {
 
     return DatabaseUser(
       id: userId,
-      email: email.toLowerCase(),
+      email: email,
     );
   }
 
@@ -236,7 +235,7 @@ class NotesService {
     try {
       await open();
     } on DatabaseAlreadyOpenException {
-      // do nothing
+      // empty
     }
   }
 
@@ -249,9 +248,7 @@ class NotesService {
       final dbPath = join(docsPath.path, dbName);
       final db = await openDatabase(dbPath);
       _db = db;
-
-      // create user table
-
+      // create the user table
       await db.execute(createUserTable);
       // create note table
       await db.execute(createNoteTable);
@@ -266,7 +263,6 @@ class NotesService {
 class DatabaseUser {
   final int id;
   final String email;
-
   const DatabaseUser({
     required this.id,
     required this.email,
@@ -277,7 +273,7 @@ class DatabaseUser {
         email = map[emailColumn] as String;
 
   @override
-  String toString() => 'Person, ID: $id, Email: $email';
+  String toString() => 'Person, ID = $id, email = $email';
 
   @override
   bool operator ==(covariant DatabaseUser other) => id == other.id;
@@ -292,7 +288,7 @@ class DatabaseNote {
   final String text;
   final bool isSyncedWithCloud;
 
-  const DatabaseNote({
+  DatabaseNote({
     required this.id,
     required this.userId,
     required this.text,
@@ -303,13 +299,12 @@ class DatabaseNote {
       : id = map[idColumn] as int,
         userId = map[userIdColumn] as int,
         text = map[textColumn] as String,
-        isSyncedWithCloud = (map[isSyncedWithCloudColumn] as int) == 1
-            ? true
-            : false; // turn int to boolean
+        isSyncedWithCloud =
+            (map[isSyncedWithCloudColumn] as int) == 1 ? true : false;
 
   @override
   String toString() =>
-      'Note, ID: $id, User ID: $userId, Is Synced With Cloud: $isSyncedWithCloud, Text: $text';
+      'Note, ID = $id, userId = $userId, isSyncedWithCloud = $isSyncedWithCloud, text = $text';
 
   @override
   bool operator ==(covariant DatabaseNote other) => id == other.id;
