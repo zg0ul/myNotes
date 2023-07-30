@@ -4,6 +4,7 @@ import 'package:mynotes/services/auth/auth_exceptions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
 import 'package:mynotes/services/auth/bloc/auth_event.dart';
+import 'package:mynotes/services/auth/bloc/auth_state.dart';
 import '../utilities/dialogs/error_dialog.dart';
 
 class LoginView extends StatefulWidget {
@@ -55,42 +56,42 @@ class _LoginViewState extends State<LoginView> {
               hintText: 'Password',
             ),
           ),
-          TextButton(
-            onPressed: () async {
-              // Initialize Firebase
+          BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) async {
+              if (state is AuthStateLoggedOut) {
+                if (state.exception is UserNotFoundAuthException) {
+                  await showErrorDialog(
+                    context,
+                    'No user found for that email.',
+                  );
+                } else if (state.exception is WrongPasswordAuthException) {
+                  await showErrorDialog(
+                    context,
+                    'Wrong credentials',
+                  );
+                } else if (state.exception is GenericAuthException) {
+                  await showErrorDialog(
+                    context,
+                    'Authentication Error',
+                  );
+                }
+              }
+            },
+            child: TextButton(
+              onPressed: () async {
+                // Initialize Firebase
 
-              final email = _email.text;
-              final password = _password.text;
-              try {
+                final email = _email.text;
+                final password = _password.text;
                 context.read<AuthBloc>().add(
                       AuthEventLogIn(
                         email,
                         password,
                       ),
                     );
-              } on UserNotFoundAuthException {
-                await showErrorDialog(
-                  context,
-                  'No user found for that email.',
-                );
-              } on WrongPasswordAuthException {
-                await showErrorDialog(
-                  context,
-                  'Wrong password',
-                );
-              } on InvalidEmailAuthException {
-                await showErrorDialog(
-                  context,
-                  'Invalid email address.',
-                );
-              } on GenericAuthException {
-                await showErrorDialog(
-                  context,
-                  'Authentication Error',
-                );
-              }
-            },
-            child: const Text('Login'),
+              },
+              child: const Text('Login'),
+            ),
           ),
           TextButton(
             onPressed: () {
