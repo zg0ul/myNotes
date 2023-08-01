@@ -6,8 +6,10 @@ import 'package:equatable/equatable.dart';
 abstract class AuthState {
   final bool isLoading;
   final String? loadingText;
-  const AuthState(
-      {required this.isLoading, this.loadingText = 'Please wait a moment'});
+  const AuthState({
+    required this.isLoading,
+    this.loadingText = 'Please wait a moment',
+  });
 }
 
 class AuthStateUninitialized extends AuthState {
@@ -19,6 +21,16 @@ class AuthStateRegistering extends AuthState {
   final Exception? exception;
   const AuthStateRegistering({
     required this.exception,
+    required isLoading,
+  }) : super(isLoading: isLoading);
+}
+
+class AuthStateForgotPassword extends AuthState {
+  final Exception? exception;
+  final bool hasSentEmail;
+  const AuthStateForgotPassword({
+    required this.exception,
+    required this.hasSentEmail,
     required bool isLoading,
   }) : super(isLoading: isLoading);
 }

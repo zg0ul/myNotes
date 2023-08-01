@@ -5,6 +5,7 @@ import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
 import 'package:mynotes/services/auth/bloc/auth_event.dart';
 import 'package:mynotes/services/auth/bloc/auth_state.dart';
 import 'package:mynotes/services/auth/firebase_auth_provider.dart';
+import 'package:mynotes/views/forgot_password_view.dart';
 import 'package:mynotes/views/login_view.dart';
 import 'package:mynotes/views/notes/create_update_note_view.dart';
 import 'package:mynotes/views/notes/notes_view.dart';
@@ -20,9 +21,9 @@ void main() {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         // useMaterial3: true,
-        primarySwatch: Colors.teal,
+        primarySwatch: Colors.deepPurple,
       ),
       home: BlocProvider<AuthBloc>(
         create: (context) => AuthBloc(FirebaseAuthProvider()),
@@ -49,7 +50,7 @@ class HomePage extends StatelessWidget {
             context: context,
             text: state.loadingText ?? 'Please wait a moment',
           );
-        } else { 
+        } else {
           LoadingScreen().hide();
         }
       },
@@ -60,6 +61,8 @@ class HomePage extends StatelessWidget {
           return const VerifyEmailView();
         } else if (state is AuthStateLoggedOut) {
           return const LoginView();
+        } else if (state is AuthStateForgotPassword) {
+          return const ForgotPasswordView();
         } else if (state is AuthStateRegistering) {
           return const RegisterView();
         } else {
